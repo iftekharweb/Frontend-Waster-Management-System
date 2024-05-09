@@ -4,3 +4,4 @@ export { default as Footer } from './Footer';
 export { default as ResetPassword } from './ResetPassword';
 export { default as ChangePassword} from './ChangePassword'
 export { default as ChangeProfile} from './ChangeProfile'
+export { default as MapView} from './MapView'

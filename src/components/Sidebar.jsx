@@ -6,12 +6,12 @@ import {
   AiOutlineStock,
 } from "react-icons/ai";
 import { FiPieChart } from "react-icons/fi";
-import { MdSpaceDashboard } from "react-icons/md";
+import { MdSpaceDashboard, MdOutlineCancel, MdOutlineWork } from "react-icons/md";
+import { IoPersonAdd } from "react-icons/io5";
 import { ImProfile } from "react-icons/im";
 import { IoMdContacts } from "react-icons/io";
 import { RiStockLine } from "react-icons/ri";
 import { FaHandsWash } from "react-icons/fa";
-import { MdOutlineCancel } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 
 import { useStateContext } from "../contexts/ContextProvider";
@@ -37,6 +37,14 @@ const links = [
       {
         name: "users",
         icon: <IoMdContacts />,
+      },
+      {
+        name: "create",
+        icon: <IoPersonAdd />,
+      },
+      {
+        name: "roles",
+        icon: <MdOutlineWork />,
       },
     ],
   },

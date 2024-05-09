@@ -15,11 +15,17 @@ const Users = () => {
   const [role, setRole] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [username, setUsername] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [email, setEmail] = useState("");
 
-  const filteredUsers = users.filter((user) =>
-    user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase()) 
+  const filteredUsers = users.filter(
+    (user) =>
+      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
 
   const fetchUsers = async () => {
     try {
@@ -59,13 +65,16 @@ const Users = () => {
     fetchUsers();
   };
 
-  const changeRole = async () => {
+  const changeUserData = async (id) => {
     try {
       console.log(role);
-      const res = await axios.put(
-        `http://127.0.0.1:8000/users/${idToEdit}/roles/`,
+      const res = await axios.patch(
+        `http://127.0.0.1:8000/users/${id}/`,
         {
-          role: role,
+          username: username,
+          first_name: first_name,
+          last_name: last_name,
+          email: email
         },
         {
           headers: {
@@ -74,27 +83,27 @@ const Users = () => {
         }
       );
       setIdToEdit(null);
+      setEmail("");
+      setUsername("");
+      setFirst_name("");
+      setLast_name("");
       fetchUsers();
     } catch (error) {
       console.error(error);
     }
   };
-  const handleEdit = (id, role_name) => {
-    setIdToEdit(id);
-    setSelectedRole(role_name);
+
+  const handleEdit = (user) => {
+    setIdToEdit(user.id);
+    setEmail(user.email);
+    setUsername(user.username);
+    setFirst_name(user.first_name);
+    setLast_name(user.last_name);
   };
 
   const nullIdToEdit = () => {
     setIdToEdit(null);
-    setSelectedRole("");
   };
-
-  useEffect(() => {
-    if (selectedRole === "System Admin") setRole(1);
-    if (selectedRole === "STS Manager") setRole(2);
-    if (selectedRole === "Land Field Manager") setRole(3);
-    if (selectedRole === "Unassigned") setRole(4);
-  }, [selectedRole]);
 
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
@@ -102,11 +111,12 @@ const Users = () => {
         <div className="w-full flex flex-row justify-between items-center px-5">
           <h1 className="text-3xl font-semibold">Users</h1>
           <div className="flex flex-row justify-end items-center">
-            <input type="text" 
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-3 border-2 border-[#03C9D7] focus:border-[#03C9D7] focus:outline-none rounded-md"
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-3 border-2 border-[#03C9D7] focus:border-[#03C9D7] focus:outline-none rounded-md"
             />
           </div>
         </div>
@@ -150,7 +160,7 @@ const Users = () => {
                   <div className="flex flex-row justify-between items-center">
                     <button
                       className="px-5 text-2xl text-sky-500 hover:text-sky-800"
-                      onClick={() => handleEdit(user.id, user.role_name)}
+                      onClick={() => handleEdit(user)}
                     >
                       <MdEditDocument />
                     </button>
@@ -164,34 +174,59 @@ const Users = () => {
                 </div>
               </div>
               {idToEdit === user.id && (
-                <div className="w-full flex flex-row justify-center py-5 mx-5">
-                  <div className="flex justify-center items-center px-4">
-                    <p className="font-semibold">Change Role:</p>
+                <div className="w-full flex justify-center items-center">
+                <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
+                  <div className="flex justify-center items-center px-4 w-full">
+                    <p className="font-semibold">Change User</p>
                   </div>
-                  <select
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    className="mx-4"
-                  >
-                    <option value="System Admin">System Admin</option>
-                    <option value="STS Manager">STS Manager</option>
-                    <option value="Land Field Manager">
-                      Land Field Manager
-                    </option>
-                    <option value="Unassigned">Unassigned</option>
-                  </select>
-                  <button
-                    onClick={changeRole}
-                    className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
-                  >
-                    Change
-                  </button>
-                  <button
-                    onClick={nullIdToEdit}
-                    className="p-2 text-red-400 hover:text-red-600 font-semibold"
-                  >
-                    Cancel
-                  </button>
+                  <input
+                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                  <input
+                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                    type="text"
+                    placeholder="First Name"
+                    value={first_name}
+                    onChange={(e) => setFirst_name(e.target.value)}
+                    required
+                  />
+                  <input
+                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                    type="text"
+                    placeholder="Last Name"
+                    value={last_name}
+                    onChange={(e) => setLast_name(e.target.value)}
+                    required
+                  />
+                  <input
+                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+
+                  <div className="flex flex-row justify-center items-center">
+                    <button
+                      onClick={() => changeUserData(user.id)}
+                      className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
+                    >
+                      Change
+                    </button>
+                    <button
+                      onClick={nullIdToEdit}
+                      className="p-2 text-red-400 hover:text-red-600 font-semibold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
                 </div>
               )}
             </>

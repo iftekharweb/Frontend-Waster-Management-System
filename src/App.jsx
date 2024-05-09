@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 
 import { Navbar, Footer, Sidebar } from "./components";
-import { Login, Profile, Users } from "./pages";
+import { Login, Profile, Users, Roles, Create } from "./pages";
 import "./App.css";
 
 import { useStateContext } from "./contexts/ContextProvider";
@@ -38,6 +38,8 @@ const AuthenticatedRoutes = ({ activeMenu }) => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/roles" element={<Roles />} />
+              <Route path="/create" element={<Create />} />
 
               {/* pages, apps, charts routes go here */}
             </Routes>

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 
-const ChangeProfile = ({profileState}) => {
+const ChangeProfile = ({profileState, fullUser}) => {
   const {authToken} = useStateContext();
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [email, setEmail] = useState("");
+  const [first_name, setFirst_name] = useState(fullUser.first_name);
+  const [last_name, setLast_name] = useState(fullUser.last_name);
+  const [email, setEmail] = useState(fullUser.email);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

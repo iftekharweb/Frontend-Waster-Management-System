@@ -37,6 +37,7 @@ const Profile = () => {
   const [created_at, setCreated_at] = useState({});
   const [isChanging, setIsChanging] = useState(false);
   const [isProfile, setIsProfile] = useState(false);
+  const [fullUser, setFullUser] = useState({});
 
   const navigate = useNavigate();
 
@@ -48,6 +49,7 @@ const Profile = () => {
         },
       });
       const data = response.data[0];
+      setFullUser(data);
       setEmail(() => data.email);
       setFirstname(() => data.first_name);
       setLastname(() => data.last_name);
@@ -168,7 +170,7 @@ const Profile = () => {
         isChanging && <ChangePassword changeState={changeState}/>
       }
       {
-        isProfile && <ChangeProfile profileState={profileState}/>
+        isProfile && <ChangeProfile profileState={profileState} fullUser={fullUser}/>
       }
     </div>
   );

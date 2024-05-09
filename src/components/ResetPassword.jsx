@@ -113,12 +113,12 @@ const ResetPassword = ({handleReset}) => {
             </div>
           </div>
         ) : (
-          <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl w-[80%]">
+          <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl flex justify-center items-center">
             <div className="flex flex-col w-1/2 justify-center items-center">
-              <p>A fake email has been sent! </p>
+              <p className="py-3 text-xl">A email has been sent! </p>
               <SiTicktick className="text-green-500"/>
               <button
-                className="px-3 text-[#03C9D7] hover:font-bold"
+                className="px-3 text-[#03C9D7] text-xl hover:font-bold py-3"
                 onClick={handleReset}
               >
                 Log in page

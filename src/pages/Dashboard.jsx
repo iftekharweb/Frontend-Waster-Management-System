@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash, FaTruck, FaUsers } from "react-icons/fa";
 import { FcFullTrash, FcManager } from "react-icons/fc";
 import axios from "axios";
-import Chart from 'chart.js/auto';
+import Chart from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
+import { MapView } from "../components";
 
 const currentColor = "#03C9D7";
 
@@ -14,22 +15,31 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const [totalTrashCollected, setTotalTrashCollected] = useState(0);
-  const [last7DaysTotalTrashCollected, setLast7DaysTotalTrashCollected] = useState(0);
+  const [last7DaysTotalTrashCollected, setLast7DaysTotalTrashCollected] =
+    useState(0);
   const [total_vehicles, setTotal_vehicles] = useState(0);
   const [total_waste_capacity, setTotal_waste_capacity] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [usersByRoleWithPercentage, setUsersByRoleWithPercentage] = useState([]);
+  const [usersByRoleWithPercentage, setUsersByRoleWithPercentage] = useState(
+    []
+  );
   const [last7DaysData, setLast7DaysData] = useState([]);
   const [chartInitialized, setChartInitialized] = useState(false); // New state variable
 
   useEffect(() => {
-    if(authToken === "") {
-      navigate('/');
+    if (authToken === "") {
+      navigate("/");
       return;
     }
     const fetchData = async () => {
       try {
-        const [totalDumpingRecords, last7DaysDumpingRecords, vehicleSummary, landfillWasteCapacity, userSummary] = await Promise.all([
+        const [
+          totalDumpingRecords,
+          last7DaysDumpingRecords,
+          vehicleSummary,
+          landfillWasteCapacity,
+          userSummary,
+        ] = await Promise.all([
           axios.get("http://127.0.0.1:8000/total-dumping-records/"),
           axios.get("http://127.0.0.1:8000/last-7-days-dumping-records/"),
           axios.get("http://127.0.0.1:8000/vehicle-summary/"),
@@ -49,28 +59,32 @@ const Dashboard = () => {
         );
         setTotalTrashCollected(totalTrashCollectedValue);
 
-        const last7DaysTotalTrashCollectedValue = last7DaysDumpingRecordsData.reduce(
-          (sum, record) => sum + parseFloat(record.VolumeOfWaste),
-          0
-        );
+        const last7DaysTotalTrashCollectedValue =
+          last7DaysDumpingRecordsData.reduce(
+            (sum, record) => sum + parseFloat(record.VolumeOfWaste),
+            0
+          );
         setLast7DaysTotalTrashCollected(last7DaysTotalTrashCollectedValue);
 
         setTotal_vehicles(vehicleSummaryData.total_vehicles);
         setTotal_waste_capacity(landfillWasteCapacityData.total_waste_capacity);
 
         const totalUsersValue = userSummaryData.total_users;
-        const usersByRoleWithPercentageValue = userSummaryData.users_by_role.map((user) => ({
-          ...user,
-          percentage: ((user.count / totalUsersValue) * 100).toFixed(2),
-        }));
+        const usersByRoleWithPercentageValue =
+          userSummaryData.users_by_role.map((user) => ({
+            ...user,
+            percentage: user.count,
+          }));
         setTotalUsers(totalUsersValue);
         setUsersByRoleWithPercentage(usersByRoleWithPercentageValue);
 
         // Extracting last 7 days data for chart
-        const last7DaysChartData = last7DaysDumpingRecordsData.map((record) => ({
-          date: record.date,
-          wasteCollected: parseFloat(record.VolumeOfWaste),
-        }));
+        const last7DaysChartData = last7DaysDumpingRecordsData.map(
+          (record) => ({
+            date: record.date,
+            wasteCollected: parseFloat(record.VolumeOfWaste),
+          })
+        );
         setLast7DaysData(last7DaysDumpingRecordsData);
       } catch (error) {
         console.log(error);
@@ -104,7 +118,7 @@ const Dashboard = () => {
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <div className="flex flex-row justify-between items-center mx-8 mt-8">
-        <div className="rounded-lg bg-gray-50 p-4 w-80"> 
+        <div className="rounded-lg bg-gray-50 p-4 w-80 shadow-md">
           <p className="text-[#2D7981]">Total Trash Collected</p>
           <div className="flex items-center">
             <span className="text-2xl font-bold mr-2">
@@ -115,7 +129,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="rounded-lg bg-gray-50 p-4 w-80">
+        <div className="rounded-lg bg-gray-50 p-4 w-80 shadow-md">
           <p className="text-[#2d7981]">Total Waste Capacity</p>
           <div className="flex items-center">
             <span className="text-2xl font-bold mr-2">
@@ -126,7 +140,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="rounded-lg bg-gray-50 p-4 w-80">
+        <div className="rounded-lg bg-gray-50 p-4 w-80 shadow-md">
           <p className="text-[#2d7981]">Trash Collected In Last 7 Days</p>
           <div className="flex items-center">
             <span className="text-2xl font-bold mr-2">
@@ -140,7 +154,7 @@ const Dashboard = () => {
 
       <div className="flex flex-row justify-between m-8 gap-8">
         <div className="flex flex-col gap-4">
-          <div className="p-4 rounded-lg bg-gray-50">
+          <div className="p-4 rounded-lg bg-gray-50 shadow-md">
             <div className=" text-[#2d7981]">
               <FaTruck className="mr-2" />
               <p>Total Trucks</p>
@@ -148,7 +162,7 @@ const Dashboard = () => {
             <div className="text-xl font-bold">{total_vehicles}</div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-md">
             <div className="text-[#2d7981]">
               <FaUsers className="mr-2" />
               <p>Total Users </p>
@@ -157,10 +171,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-xl flex-1">
+        <div className="bg-gray-50 p-4 rounded-xl flex-1 shadow-md">
           <div className="flex justify-center items-center text-[#2d7981]">
             <FaUsers className="mr-2" />
-            <p>Total Users Percentages</p>
+            <p>Total Users Per Role</p>
           </div>
           <div className="text-xl font-bold flex justify-center items-center">
             {totalUsers} users
@@ -177,12 +191,14 @@ const Dashboard = () => {
                 >
                   <div className="w-16 h-16 bg-[#84ecf3] rounded-full flex items-center justify-center mr-2">
                     <span className="text-6xl font-bold">
-                      <FcManager/>
+                      <FcManager />
                     </span>
                   </div>
                   <div>
                     <p className="text-lg">{user.role__Name}</p>
-                    <p className="text-sm">{user.percentage}%</p>
+                    <p className="text-sm">
+                      {user.percentage} {user.percentage > 1 ? "users" : "user"}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -192,8 +208,10 @@ const Dashboard = () => {
       </div>
 
       <div className="mx-8">
-        <div className="bg-gray-50 p-8 rounded-xl mt-4 w-full flex flex-col justify-center items-center">
-        <p className="text-[#2d7981] text-md">Waste Collected in Last 7 Days</p>
+        <div className="bg-gray-50 p-8 rounded-xl mt-4 w-full flex flex-col justify-center items-center shadow-md">
+          <p className="text-[#2d7981] text-md">
+            Waste Collected in Last 7 Days
+          </p>
           <div className="p-4 w-[80%] h-[400px] flex justify-center items-center">
             <Bar
               data={{
@@ -216,6 +234,13 @@ const Dashboard = () => {
             />
           </div>
         </div>
+      </div>
+
+      <div className="mx-8 p-5">
+        <div className="flex justify-center items-center pt-5">
+          <p className="text-xl">Locations of Landfill and STS</p>
+        </div>
+        <MapView/>
       </div>
     </div>
   );

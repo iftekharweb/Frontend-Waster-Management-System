@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { useStateContext } from "../contexts/ContextProvider";
 
 import LOGIN_COVER from "../assets/green.jpg";
 import {ResetPassword} from "../components";
 
+
+
 const Login = () => {
   const { authToken, setAuthToken, setAuthUsername } = useStateContext();
+  const navigate = useNavigate('/');
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +20,9 @@ const Login = () => {
 
   const handleReset = () => {
     setIsForgot(!isForgot);
-    console.log(isForgot)
   }
+
+  const notify_wrong_password = (e) => toast.error(e);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +39,12 @@ const Login = () => {
         localStorage.setItem("token", data.token.access);
         setAuthUsername(username);
         setAuthToken(data.token.access);
+      } else {
+        notify_wrong_password("Incorrect username or password!");
       }
     } catch (error) {
       console.log(error.message);
+      notify_wrong_password("Incorrect username or password!");
     }
   };
 
@@ -104,6 +113,7 @@ const Login = () => {
       ) : (
         <ResetPassword handleReset={handleReset}/>
       )}
+      <ToastContainer/>
     </>
   );
 };
