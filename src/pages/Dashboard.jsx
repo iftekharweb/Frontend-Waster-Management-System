@@ -47,6 +47,8 @@ const Dashboard = () => {
           axios.get(`${import.meta.env.VITE_BASEURL}/user-summary/`),
         ]);
 
+        console.log(`${import.meta.env.VITE_BASEURL}/total-dumping-records/`);
+
         const totalDumpingRecordsData = totalDumpingRecords.data;
         const last7DaysDumpingRecordsData = last7DaysDumpingRecords.data;
         const vehicleSummaryData = vehicleSummary.data;

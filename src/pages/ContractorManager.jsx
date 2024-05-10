@@ -27,7 +27,7 @@ const ContractorManager = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/contractor-manager/`, {
+      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/contractor-managers/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -52,7 +52,7 @@ const ContractorManager = () => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/contractor-manager/${id}/`, {
+      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/contractor-managers/${id}/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -67,7 +67,7 @@ const ContractorManager = () => {
     try {
       console.log(role);
       const res = await axios.patch(
-        `${import.meta.env.VITE__BASE_URL}/controctor-manager/${id}/`,
+        `${import.meta.env.VITE__BASE_URL}/controctor-managers/${id}/`,
         {
           sts: sts,
         },
@@ -132,7 +132,7 @@ const ContractorManager = () => {
             <>
               <div
                 className="flex flex-row justify-evenly items-center py-2 border-l-4 my-2 border-[#03C9D7] bg-gray-50 rounded-sm"
-                key={user.id}
+                key={user.user.id}
               >
                 <div className="w-1/4 flex justify-center items-center">
                   <span>

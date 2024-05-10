@@ -17,6 +17,9 @@ const Landfill = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [landfill, setLandfill] = useState("");
+  const [landfills, setLandfills] = useState([]);
+  const [landfillID, setLandfillID] = useState(null);
+  const [selectedArea, setSelectedArea] = useState("");
 
   const filteredUsers = users.filter(
     (user) =>
@@ -27,15 +30,29 @@ const Landfill = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/landfill-manager/`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASEURL}/landfill-managers/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       if (res.data) {
         setUsers(res.data);
       } else {
         console.error("Failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchLandfills = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/landfills/`);
+      if (res.data) {
+        setLandfills(res.data);
       }
     } catch (error) {
       console.error(error);
@@ -48,28 +65,31 @@ const Landfill = () => {
       return;
     }
     fetchUsers();
+    fetchLandfills();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/landfill-manager/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BASEURL}/landfill-managers/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
     fetchUsers();
   };
 
-  const changeUserData = async (id) => {
+  const changeUserData = async (id, user) => {
     try {
-      console.log(role);
-      const res = await axios.patch(
-        `${import.meta.env.VITE_BASEURL}/landfill-manager/${id}/`,
+      const res = await axios.put(
+        `${import.meta.env.VITE_BASEURL}/landfill-managers/${id}/`,
         {
-          landfill: landfill,
+          landfill: landfillID,
         },
         {
           headers: {
@@ -84,6 +104,11 @@ const Landfill = () => {
       console.error(error);
     }
   };
+  useEffect(() => {
+    const obj = landfills.filter((x) => x.Location === selectedArea);
+    setLandfillID(obj[0]?.LandfillID);
+    console.log(obj);
+  }, [selectedArea]);
 
   const handleEdit = (user) => {
     setIdToEdit(user.user.id);
@@ -120,7 +145,7 @@ const Landfill = () => {
               <span>Email Address</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
-              <span>User Role</span>
+              <span>Landfill ID</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
               <FaArrowAltCircleDown className="text-xl text-[#03C9D7]" />
@@ -143,7 +168,7 @@ const Landfill = () => {
                   <span>{user.user.email}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
-                  <span>{user.user.role_name}</span>
+                  <span>{user.landfill}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
                   <div className="flex flex-row justify-between items-center">
@@ -155,7 +180,7 @@ const Landfill = () => {
                     </button>
                     <button
                       className="px-5 text-2xl text-red-500 hover:text-red-800"
-                      onClick={() => handleDelete(user.user.id)}
+                      onClick={() => handleDelete(user.id)}
                     >
                       <MdDelete />
                     </button>
@@ -164,34 +189,39 @@ const Landfill = () => {
               </div>
               {idToEdit === user.user.id && (
                 <div className="w-full flex justify-center items-center">
-                <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
-                  <div className="flex justify-center items-center px-4 w-full">
-                    <p className="font-semibold">Update Manager Info</p>
-                  </div>
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="text"
-                    placeholder="LandFill"
-                    value={landfill}
-                    onChange={(e) => setLandfill(e.target.value)}
-                    required
-                  />
+                  <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
+                    <div className="flex justify-center items-center px-4 w-full">
+                      <p className="font-semibold py-2">Update Manager Info</p>
+                    </div>
+                    <div className="flex justify-center items-center w-full">
+                      <select
+                        value={selectedArea}
+                        onChange={(e) => setSelectedArea(e.target.value)}
+                        className="mx-4 p-2 w-[60%] border-1 border-[#03C9D7] focus:border-2 focus:border-[#03C9D7] rounded-lg"
+                      >
+                        {landfills.map((one) => (
+                          <option key={one.LandfillID} value={one.Location}>
+                            {one.WardNumber} {one.Location}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                  <div className="flex flex-row justify-center items-center">
-                    <button
-                      onClick={() => changeUserData(user.user.id)}
-                      className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={nullIdToEdit}
-                      className="p-2 text-red-400 hover:text-red-600 font-semibold"
-                    >
-                      Cancel
-                    </button>
+                    <div className="flex flex-row justify-center items-center">
+                      <button
+                        onClick={() => changeUserData(user.id, user)}
+                        className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={nullIdToEdit}
+                        className="p-2 text-red-400 hover:text-red-600 font-semibold"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </>

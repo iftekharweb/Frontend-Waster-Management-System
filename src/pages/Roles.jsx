@@ -86,6 +86,7 @@ const Roles = () => {
     if (selectedRole === "STS Manager") setRole(2);
     if (selectedRole === "Land Field Manager") setRole(3);
     if (selectedRole === "Unassigned") setRole(4);
+    if (selectedRole === "Contractor Manager") setRole(5);
   }, [selectedRole]);
 
   return (
@@ -165,6 +166,7 @@ const Roles = () => {
                       Land Field Manager
                     </option>
                     <option value="Unassigned">Unassigned</option>
+                    <option value="Contractor Manager">Contractor Manager</option>
                   </select>
                   <button
                     onClick={changeRole}
