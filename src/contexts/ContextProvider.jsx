@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const StateContext = createContext();
 
@@ -7,6 +8,8 @@ export const ContextProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState("");
   const [authUsername, setAuthUsername] = useState("");
   const [authUserId, setAuthUserId] = useState(null);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authRole, setAuthRole] = useState(null);
 
   const decodeToken = (token) => {
     const base64Url = token.split(".")[1];
@@ -33,15 +36,41 @@ export const ContextProvider = ({ children }) => {
       setAuthUserId(user);
       if (user) {
         setAuthToken(token);
+        setAuthUserId(user.user_id);
       } else {
         setAuthToken("");
       }
     }
   }, []);
 
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/profile/", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      if(response.data) {
+        const data = response.data[0];
+        setAuthUsername(data.username);
+        setAuthEmail(data.email);
+        setAuthRole(data.role);
+        if(data.role === 4) {
+          setAuthToken("");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUser();
+  },[authToken])
+
   return (
     <StateContext.Provider
-      value={{ activeMenu, setActiveMenu, authToken, setAuthToken,handleLogOut, authUsername, setAuthUsername, authUserId, setAuthUserId}}
+      value={{ activeMenu, setActiveMenu, authToken, setAuthToken,handleLogOut, authUsername, setAuthUsername, authUserId, setAuthUserId, authRole}}
     >
       {children}
     </StateContext.Provider>

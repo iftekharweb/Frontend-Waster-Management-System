@@ -65,7 +65,6 @@ const Profile = () => {
   }
   useEffect(() => {
     if (authToken === "") {
-      console.log("okkkk");
       navigate("/");
     }
   }, []);
@@ -73,8 +72,6 @@ const Profile = () => {
   useEffect(() => {
     if (authToken != "") {
       if (!authUserId) {
-        console.log(authUserId);
-        //handleLogOut();
         //navigate("/");
       } else {
         populateProfile();

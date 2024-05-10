@@ -4,6 +4,8 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import { MdDelete, MdEditDocument } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Roles = () => {
   const { authToken } = useStateContext();
@@ -19,6 +21,8 @@ const Roles = () => {
   const filteredUsers = users.filter((user) =>
     user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
+
+  const notify_sucess = (e) => toast.success(e);
 
 
   const fetchUsers = async () => {
@@ -62,6 +66,7 @@ const Roles = () => {
       );
       setIdToEdit(null);
       fetchUsers();
+      notify_sucess("Role has been changed!")
     } catch (error) {
       console.error(error);
     }
@@ -179,6 +184,7 @@ const Roles = () => {
           ))}
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 };

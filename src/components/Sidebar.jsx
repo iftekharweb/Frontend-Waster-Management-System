@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   AiOutlineAreaChart,
@@ -22,6 +22,7 @@ const links = [
     links: [
       {
         name: "dashboard",
+        role: [1,2,3],
         icon: <MdSpaceDashboard />,
       },
     ],
@@ -32,18 +33,22 @@ const links = [
     links: [
       {
         name: "profile",
+        role: [1,2,3],
         icon: <ImProfile />,
       },
       {
         name: "users",
+        role: [1],
         icon: <IoMdContacts />,
       },
       {
         name: "create",
+        role: [1],
         icon: <IoPersonAdd />,
       },
       {
         name: "roles",
+        role: [1],
         icon: <MdOutlineWork />,
       },
     ],
@@ -53,23 +58,28 @@ const links = [
     links: [
       {
         name: "line",
+        role: [1,2,3],
         icon: <AiOutlineStock />,
       },
       {
         name: "area",
+        role: [1,2,3],
         icon: <AiOutlineAreaChart />,
       },
 
       {
         name: "bar",
+        role: [1,2,3],
         icon: <AiOutlineBarChart />,
       },
       {
         name: "pie",
+        role: [1,2,3],
         icon: <FiPieChart />,
       },
       {
         name: "financial",
+        role: [1,2,3],
         icon: <RiStockLine />,
       },
     ],
@@ -80,7 +90,11 @@ const currentColor = "#03C9D7";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { activeMenu, setActiveMenu , handleLogOut} = useStateContext();
+  const { activeMenu, setActiveMenu , handleLogOut, authRole} = useStateContext();
+
+  useEffect(() => {
+    console.log(authRole);
+  }, [])
 
   const handleCloseSideBar = () => {
     if (activeMenu !== undefined) {
@@ -123,7 +137,7 @@ const Sidebar = () => {
                   {item.title}
                 </p>
                 {item.links.map((link) => (
-                  <NavLink
+                  link.role.find((id) => id === authRole) && <NavLink
                     to={`/${link.name}`}
                     key={link.name}
                     onClick={handleCloseSideBar}
