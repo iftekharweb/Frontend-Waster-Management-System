@@ -9,6 +9,7 @@ import { FiPieChart } from "react-icons/fi";
 import { MdSpaceDashboard, MdOutlineCancel, MdOutlineWork } from "react-icons/md";
 import { IoPersonAdd } from "react-icons/io5";
 import { ImProfile } from "react-icons/im";
+import { RiContractFill } from "react-icons/ri";
 import { IoMdContacts } from "react-icons/io";
 import { RiStockLine } from "react-icons/ri";
 import { FaHandsWash } from "react-icons/fa";
@@ -50,6 +51,11 @@ const links = [
         name: "roles",
         role: [1],
         icon: <MdOutlineWork />,
+      },
+      {
+        name: "third-party-contractor",
+        role: [1],
+        icon: <RiContractFill />,
       },
     ],
   },

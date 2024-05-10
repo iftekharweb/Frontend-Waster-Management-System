@@ -5,3 +5,4 @@ export { default as ResetPassword } from './ResetPassword';
 export { default as ChangePassword} from './ChangePassword'
 export { default as ChangeProfile} from './ChangeProfile'
 export { default as MapView} from './MapView'
+export { default as CreateThirdPartyContractors} from './CreateThirdPartyContractors'
