@@ -17,6 +17,12 @@ const ContractorManager = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [contractor, setContractor] = useState("");
+  const [allContractors, setAllContractors] = useState([]);
+  const [TPCID, setTPCID] = useState(null);
+  const [selectedArea, setSelectedArea] = useState("");
+
+  const [access_level, setAccessLevel] = useState("");
+  const [contact_number, setContactNumber] = useState("");
 
   const filteredUsers = users.filter(
     (user) =>
@@ -27,13 +33,36 @@ const ContractorManager = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/contractor-managers/`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASEURL}/contractor-managers/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       if (res.data) {
         setUsers(res.data);
+      } else {
+        console.error("Failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchContractors = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASEURL}/third-party-contractors/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      if (res.data) {
+        setAllContractors(res.data);
+        setSelectedArea(res.data[0].Location);
       } else {
         console.error("Failed");
       }
@@ -48,15 +77,19 @@ const ContractorManager = () => {
       return;
     }
     fetchUsers();
+    fetchContractors();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/contractor-managers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BASEURL}/contractor-managers/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
@@ -67,9 +100,11 @@ const ContractorManager = () => {
     try {
       console.log(role);
       const res = await axios.patch(
-        `${import.meta.env.VITE__BASE_URL}/controctor-managers/${id}/`,
+        `${import.meta.env.VITE_BASEURL}/contractor-managers/${id}/`,
         {
-          sts: sts,
+          contact_number: contact_number,
+          assigned_contractor_company : TPCID,
+          access_level: access_level
         },
         {
           headers: {
@@ -85,9 +120,14 @@ const ContractorManager = () => {
     }
   };
 
+  useEffect(() => {
+    const obj = allContractors.filter((x) => x.Location === selectedArea);
+    setTPCID(obj[0]?.id);
+  }, [selectedArea]);
+
   const handleEdit = (user) => {
     setIdToEdit(user.user.id);
-    setContractor(user.sts);
+    //setAllContractors(user.sts);
   };
 
   const nullIdToEdit = () => {
@@ -98,7 +138,7 @@ const ContractorManager = () => {
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <div className="w-full h-full flex flex-col">
         <div className="w-full flex flex-row justify-between items-center px-5">
-          <h1 className="text-3xl font-semibold">Contractor Managers</h1>
+          <h1 className="text-3xl font-semibold">Contrator Managers</h1>
           <div className="flex flex-row justify-end items-center">
             <input
               type="text"
@@ -120,7 +160,7 @@ const ContractorManager = () => {
               <span>Email Address</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
-              <span>User Role</span>
+              <span>Contractor Company ID</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
               <FaArrowAltCircleDown className="text-xl text-[#03C9D7]" />
@@ -132,18 +172,22 @@ const ContractorManager = () => {
             <>
               <div
                 className="flex flex-row justify-evenly items-center py-2 border-l-4 my-2 border-[#03C9D7] bg-gray-50 rounded-sm"
-                key={user.user.id}
+                key={user.id}
               >
                 <div className="w-1/4 flex justify-center items-center">
                   <span>
-                    {user.user.first_name} {user.user.last_name}
+                    {user.user.first_name} {user.user.last_name} {!user.user.first_name && !user.user.last_name && "-"}
                   </span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
                   <span>{user.user.email}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
-                  <span>{user.user.role_name}</span>
+                  <span>
+                    {user.assigned_contractor_company
+                      ? user.assigned_contractor_company
+                      : "-"}
+                  </span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
                   <div className="flex flex-row justify-between items-center">
@@ -155,7 +199,7 @@ const ContractorManager = () => {
                     </button>
                     <button
                       className="px-5 text-2xl text-red-500 hover:text-red-800"
-                      onClick={() => handleDelete(user.user.id)}
+                      onClick={() => handleDelete(user.id)}
                     >
                       <MdDelete />
                     </button>
@@ -164,34 +208,59 @@ const ContractorManager = () => {
               </div>
               {idToEdit === user.user.id && (
                 <div className="w-full flex justify-center items-center">
-                <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
-                  <div className="flex justify-center items-center px-4 w-full">
-                    <p className="font-semibold">Update Manager Info</p>
-                  </div>
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="text"
-                    placeholder="LandFill"
-                    value={landfill}
-                    onChange={(e) => setContractor(e.target.value)}
-                    required
-                  />
+                  <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
+                    <div className="flex justify-center items-center px-4 w-full py-2">
+                      <p className="font-semibold">Update Manager Info</p>
+                    </div>
+                    <div>
+                    <input
+                        className="w-full text-black py-2 my-2 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                        type="text"
+                        placeholder="Contact Number"
+                        value={contact_number}
+                        onChange={(e) => setContactNumber(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="flex justify-center items-center">
+                      <select
+                        value={selectedArea}
+                        onChange={(e) => setSelectedArea(e.target.value)}
+                        className="mx-4 p-2 w-full border-1 border-[#03C9D7] focus:border-2 focus:border-[#03C9D7] rounded-lg"
+                      >
+                        {allContractors.map((one) => (
+                          <option key={one.id} value={one.name}>
+                            {one.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <input
+                        className="w-full text-black py-2 my-2 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+                        type="text"
+                        placeholder="Access Level"
+                        value={access_level}
+                        onChange={(e) => setAccessLevel(e.target.value)}
+                        required
+                      />
+                    </div>
 
-                  <div className="flex flex-row justify-center items-center">
-                    <button
-                      onClick={() => changeUserData(user.user.id)}
-                      className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={nullIdToEdit}
-                      className="p-2 text-red-400 hover:text-red-600 font-semibold"
-                    >
-                      Cancel
-                    </button>
+                    <div className="flex flex-row justify-center items-center">
+                      <button
+                        onClick={() => changeUserData(user.id)}
+                        className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={nullIdToEdit}
+                        className="p-2 text-red-400 hover:text-red-600 font-semibold"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </>

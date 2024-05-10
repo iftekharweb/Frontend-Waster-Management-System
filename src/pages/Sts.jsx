@@ -17,6 +17,9 @@ const Sts = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sts, setSts] = useState("");
+  const [allSts, setAllSts] = useState([]);
+  const [STSID, setSTSID] = useState(null);
+  const [selectedArea, setSelectedArea] = useState("");
 
   const filteredUsers = users.filter(
     (user) =>
@@ -27,13 +30,33 @@ const Sts = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/sts-managers/`, {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASEURL}/sts-managers/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      if (res.data) {
+        setUsers(res.data);
+      } else {
+        console.error("Failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const fetchSts = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/sts/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
       if (res.data) {
-        setUsers(res.data);
+        setAllSts(res.data);
+        setSelectedArea(res.data[0].Location);
       } else {
         console.error("Failed");
       }
@@ -48,15 +71,19 @@ const Sts = () => {
       return;
     }
     fetchUsers();
+    fetchSts();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/sts-managers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BASEURL}/sts-managers/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
@@ -69,7 +96,7 @@ const Sts = () => {
       const res = await axios.patch(
         `${import.meta.env.VITE_BASEURL}/sts-managers/${id}/`,
         {
-          sts: sts,
+          sts: STSID,
         },
         {
           headers: {
@@ -84,6 +111,11 @@ const Sts = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const obj = allSts.filter((x) => x.Location === selectedArea);
+    setSTSID(obj[0]?.STSID);
+  }, [selectedArea]);
 
   const handleEdit = (user) => {
     setIdToEdit(user.user.id);
@@ -120,7 +152,7 @@ const Sts = () => {
               <span>Email Address</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
-              <span>User Role</span>
+              <span>STS ID</span>
             </div>
             <div className="w-1/4 flex justify-center items-center">
               <FaArrowAltCircleDown className="text-xl text-[#03C9D7]" />
@@ -132,7 +164,7 @@ const Sts = () => {
             <>
               <div
                 className="flex flex-row justify-evenly items-center py-2 border-l-4 my-2 border-[#03C9D7] bg-gray-50 rounded-sm"
-                key={user.user.id}
+                key={user.id}
               >
                 <div className="w-1/4 flex justify-center items-center">
                   <span>
@@ -143,7 +175,7 @@ const Sts = () => {
                   <span>{user.user.email}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
-                  <span>{user.user.role_name}</span>
+                  <span>{user.sts ? user.sts : "-"}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
                   <div className="flex flex-row justify-between items-center">
@@ -155,7 +187,7 @@ const Sts = () => {
                     </button>
                     <button
                       className="px-5 text-2xl text-red-500 hover:text-red-800"
-                      onClick={() => handleDelete(user.user.id)}
+                      onClick={() => handleDelete(user.id)}
                     >
                       <MdDelete />
                     </button>
@@ -164,22 +196,27 @@ const Sts = () => {
               </div>
               {idToEdit === user.user.id && (
                 <div className="w-full flex justify-center items-center">
-                <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
-                  <div className="flex justify-center items-center px-4 w-full">
-                    <p className="font-semibold">Update Manager Info</p>
-                  </div>
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="text"
-                    placeholder="LandFill"
-                    value={landfill}
-                    onChange={(e) => setSts(e.target.value)}
-                    required
-                  />
+                  <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
+                    <div className="flex justify-center items-center px-4 w-full py-2">
+                      <p className="font-semibold">Update Manager Info</p>
+                    </div>
+                    <div className="flex justify-center items-center">
+                    <select
+                      value={selectedArea}
+                      onChange={(e) => setSelectedArea(e.target.value)}
+                      className="mx-4 p-2 w-[60%] border-1 border-[#03C9D7] focus:border-2 focus:border-[#03C9D7] rounded-lg"
+                    >
+                      {allSts.map((one) => (
+                        <option key={one.STSID} value={one.Location}>
+                          {one.WardNumber} {one.Location}
+                        </option>
+                      ))}
+                    </select>
+                    </div>
 
                   <div className="flex flex-row justify-center items-center">
                     <button
-                      onClick={() => changeUserData(user.user.id)}
+                      onClick={() => changeUserData(user.id)}
                       className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
                     >
                       Update
@@ -190,8 +227,8 @@ const Sts = () => {
                     >
                       Cancel
                     </button>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </>
