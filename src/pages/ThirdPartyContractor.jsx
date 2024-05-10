@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { FaArrowAltCircleDown, FaInfoCircle } from "react-icons/fa";
 import { MdDelete, MdEditDocument } from "react-icons/md";
@@ -16,12 +17,12 @@ const initial_contractor = {
   reg_date: "",
   tin: "",
   contact_number: "",
-  workforce_size: undefined,
-  payment_per_ton: undefined,
-  waste_per_day: undefined,
-  contruct_duration: undefined,
-  area_of_collection: undefined,
-  degignated_sts: undefined,
+  workforce_size: null,
+  payment_per_ton: null,
+  waste_per_day: null,
+  contruct_duration: null,
+  area_of_collection: null,
+  degignated_sts: null,
 };
 
 function calculateTimeDifference(created_at) {
@@ -67,11 +68,13 @@ const ThirdPartyContractor = () => {
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json"
           },
         }
       );
+      console.log(res);
       if (res.data) {
-        // setTpc(res.data);
+        setTpc(res.data);
       } else {
         notify_error("Faild to fetch third party contractors");
       }
@@ -116,9 +119,10 @@ const ThirdPartyContractor = () => {
 
   const handleAdding = () => setIsAdding(!isAdding);
   const handleInfo = (company) => {
+    setContractor(company);
+    setIdToEdit(company.id);
     setIsInfor(!isInfo);
     setIsEditing(false);
-    setContractor(company);
   };
 
   return (
@@ -249,18 +253,6 @@ const ThirdPartyContractor = () => {
                         value={contractor.tin}
                         onChange={(e) =>
                           setContractor({ ...contractor, tin: e.target.value })
-                        }
-                      />
-                      <input
-                        className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                        type="text"
-                        placeholder="Contact Number"
-                        value={contractor.contact_number}
-                        onChange={(e) =>
-                          setContractor({
-                            ...contractor,
-                            contact_number: e.target.value,
-                          })
                         }
                       />
                       <input

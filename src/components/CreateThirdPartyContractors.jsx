@@ -1,20 +1,32 @@
 import axios from "axios";
 import React, { useState } from "react";
 
+import { useStateContext } from "../contexts/ContextProvider";
+
 const CreateThirdPartyContractors = ({ initial, handleAdding }) => {
+  const { authToken } = useStateContext();
   const [contractor, setContractor] = useState(initial);
 
   const createContractor = async () => {
+    delete contractor.reg_date;
+    console.log(contractor);
     try {
       const res = await axios.post(
         `http://127.0.0.1:8000/third-party-contractors/`,
-        contractor,
         {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+          name: contractor.name,
+          contract_id: contractor.contract_id,
+          reg_id: contractor.reg_id,
+          tin: contractor.tin,
+          contact_number: contractor.contact_number,
+          workforce_size: contractor.workforce_size,
+          payment_per_ton: contractor.payment_per_ton,
+          waste_per_day: contractor.waste_per_day,
+          contract_duration: contractor.contract_duration,
+          area_of_collection: contractor.area_of_collection,
+          designated_sts: contractor.designated_sts,
+        },
+      )
     } catch (error) {
       console.error(error);
     }
@@ -67,18 +79,6 @@ const CreateThirdPartyContractors = ({ initial, handleAdding }) => {
             value={contractor.tin}
             onChange={(e) =>
               setContractor({ ...contractor, tin: e.target.value })
-            }
-          />
-          <input
-            className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-            type="text"
-            placeholder="Contact Number"
-            value={contractor.contact_number}
-            onChange={(e) =>
-              setContractor({
-                ...contractor,
-                contact_number: e.target.value,
-              })
             }
           />
           <input
@@ -153,10 +153,22 @@ const CreateThirdPartyContractors = ({ initial, handleAdding }) => {
               })
             }
           />
+          <input
+            className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
+            type="number"
+            placeholder="Area of Collection"
+            value={contractor.degignated_sts}
+            onChange={(e) =>
+              setContractor({
+                ...contractor,
+                degignated_sts: e.target.value,
+              })
+            }
+          />
 
           <div className="flex flex-col justify-center items-center">
             <button
-              onClick={() => createContractor(company.id)}
+              onClick={() => createContractor(initial.id)}
               className="w-full py-2 my-3 bg-[#03C9D7] rounded-md text-white hover:bg-[#1e666b]"
             >
               Create
