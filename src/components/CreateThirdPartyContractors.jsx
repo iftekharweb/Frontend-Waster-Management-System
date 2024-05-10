@@ -1,18 +1,27 @@
+import axios from "axios";
 import React, { useState } from "react";
 
-const CreateThirdPartyContractors = ({initial, handleAdding}) => {
+const CreateThirdPartyContractors = ({ initial, handleAdding }) => {
   const [contractor, setContractor] = useState(initial);
 
   const createContractor = async () => {
     try {
-      
+      const res = await axios.post(
+        `http://127.0.0.1:8000/third-party-contractors/`,
+        contractor,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
-    <div >
+    <div>
       <div className="flex justify-center items-center">
         <div className="w-[60%] flex flex-col justify-center item-center py-5 mx-5 ">
           <div className="flex justify-center items-center px-4 w-full">
