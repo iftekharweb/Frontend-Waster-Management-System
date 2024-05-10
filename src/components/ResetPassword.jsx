@@ -25,7 +25,7 @@ const ResetPassword = ({handleReset}) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/auth/send-reset-password-email/`,
+        `${import.meta.env.VITE_BASEURL}/auth/send-reset-password-email/`,
         {
           method: "POST",
           headers: {
@@ -53,7 +53,7 @@ const ResetPassword = ({handleReset}) => {
     }
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/auth/reset-password${tokenEndpint}`,
+        `${import.meta.env.VITE_BASEURL}/auth/reset-password${tokenEndpint}`,
         {
           method: "POST",
           headers: {

@@ -64,7 +64,7 @@ const ThirdPartyContractor = () => {
   const fetchContractors = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/third-party-contractors/`,
+        `${import.meta.env.VITE_BASEURL}/third-party-contractors/`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -93,7 +93,7 @@ const ThirdPartyContractor = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://127.0.0.1:8000/third-party-contractors/${id}/`,
+        `${import.meta.env.VITE_BASEURL}/third-party-contractors/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

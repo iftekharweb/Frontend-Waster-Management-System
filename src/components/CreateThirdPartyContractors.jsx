@@ -12,7 +12,7 @@ const CreateThirdPartyContractors = ({ initial, handleAdding }) => {
     console.log(contractor);
     try {
       const res = await axios.post(
-        `http://127.0.0.1:8000/third-party-contractors/`,
+        `${import.meta.env.VITE_BASEURL}/third-party-contractors/`,
         {
           name: contractor.name,
           contract_id: contractor.contract_id,

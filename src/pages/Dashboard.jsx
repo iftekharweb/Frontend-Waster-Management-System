@@ -40,11 +40,11 @@ const Dashboard = () => {
           landfillWasteCapacity,
           userSummary,
         ] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/total-dumping-records/"),
-          axios.get("http://127.0.0.1:8000/last-7-days-dumping-records/"),
-          axios.get("http://127.0.0.1:8000/vehicle-summary/"),
-          axios.get("http://127.0.0.1:8000/landfill-waste-capacity/"),
-          axios.get("http://127.0.0.1:8000/user-summary/"),
+          axios.get(`${import.meta.env.VITE_BASEURL}/total-dumping-records/`),
+          axios.get(`${import.meta.env.VITE_BASEURL}/last-7-days-dumping-records/`),
+          axios.get(`${import.meta.env.VITE_BASEURL}/vehicle-summary/`),
+          axios.get(`${import.meta.env.VITE_BASEURL}/landfill-waste-capacity/`),
+          axios.get(`${import.meta.env.VITE_BASEURL}/user-summary/`),
         ]);
 
         const totalDumpingRecordsData = totalDumpingRecords.data;

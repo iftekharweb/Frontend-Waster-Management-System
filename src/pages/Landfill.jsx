@@ -7,31 +7,27 @@ import { useNavigate } from "react-router-dom";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
-const Users = () => {
+const Landfill = () => {
   const { authToken } = useStateContext();
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [idToEdit, setIdToEdit] = useState(null);
-  const [selectedRole, setSelectedRole] = useState("system-admin");
   const [role, setRole] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [username, setUsername] = useState("");
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [email, setEmail] = useState("");
+  const [landfill, setLandfill] = useState("");
 
   const filteredUsers = users.filter(
     (user) =>
-      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      user.user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/users/`, {
+      const res = await axios.get(`${import.meta.env.VITE_BASEURL}/landfill-manager/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -56,7 +52,7 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/users/${id}/`, {
+      const res = await axios.delete(`${import.meta.env.VITE_BASEURL}/landfill-manager/${id}/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -71,12 +67,9 @@ const Users = () => {
     try {
       console.log(role);
       const res = await axios.patch(
-        `${import.meta.env.VITE_BASEURL}/users/${id}/`,
+        `${import.meta.env.VITE_BASEURL}/landfill-manager/${id}/`,
         {
-          username: username,
-          first_name: first_name,
-          last_name: last_name,
-          email: email
+          landfill: landfill,
         },
         {
           headers: {
@@ -85,10 +78,7 @@ const Users = () => {
         }
       );
       setIdToEdit(null);
-      setEmail("");
-      setUsername("");
-      setFirst_name("");
-      setLast_name("");
+      setLandfill("");
       fetchUsers();
     } catch (error) {
       console.error(error);
@@ -96,11 +86,8 @@ const Users = () => {
   };
 
   const handleEdit = (user) => {
-    setIdToEdit(user.id);
-    setEmail(user.email);
-    setUsername(user.username);
-    setFirst_name(user.first_name);
-    setLast_name(user.last_name);
+    setIdToEdit(user.user.id);
+    setLandfill(user.landfill);
   };
 
   const nullIdToEdit = () => {
@@ -111,7 +98,7 @@ const Users = () => {
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
       <div className="w-full h-full flex flex-col">
         <div className="w-full flex flex-row justify-between items-center px-5">
-          <h1 className="text-3xl font-semibold">Users</h1>
+          <h1 className="text-3xl font-semibold">Landfill Managers</h1>
           <div className="flex flex-row justify-end items-center">
             <input
               type="text"
@@ -149,14 +136,14 @@ const Users = () => {
               >
                 <div className="w-1/4 flex justify-center items-center">
                   <span>
-                    {user.first_name} {user.last_name}
+                    {user.user.first_name} {user.user.last_name}
                   </span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
-                  <span>{user.email}</span>
+                  <span>{user.user.email}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
-                  <span>{user.role_name}</span>
+                  <span>{user.user.role_name}</span>
                 </div>
                 <div className="w-1/4 flex justify-center items-center">
                   <div className="flex flex-row justify-between items-center">
@@ -168,58 +155,34 @@ const Users = () => {
                     </button>
                     <button
                       className="px-5 text-2xl text-red-500 hover:text-red-800"
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user.user.id)}
                     >
                       <MdDelete />
                     </button>
                   </div>
                 </div>
               </div>
-              {idToEdit === user.id && (
+              {idToEdit === user.user.id && (
                 <div className="w-full flex justify-center items-center">
                 <div className="w-[50%] flex flex-col justify-center item-center py-5 mx-5">
                   <div className="flex justify-center items-center px-4 w-full">
-                    <p className="font-semibold">Change User</p>
+                    <p className="font-semibold">Update Manager Info</p>
                   </div>
                   <input
                     className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
                     type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="text"
-                    placeholder="First Name"
-                    value={first_name}
-                    onChange={(e) => setFirst_name(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="text"
-                    placeholder="Last Name"
-                    value={last_name}
-                    onChange={(e) => setLast_name(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="w-full text-black py-2 my-1 bg-transparent border-b-2 outline-none focus:outline-none focus:border-[#03C9D7]"
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="LandFill"
+                    value={landfill}
+                    onChange={(e) => setLandfill(e.target.value)}
                     required
                   />
 
                   <div className="flex flex-row justify-center items-center">
                     <button
-                      onClick={() => changeUserData(user.id)}
+                      onClick={() => changeUserData(user.user.id)}
                       className="p-2 text-sky-400 hover:text-sky-600 font-semibold"
                     >
-                      Change
+                      Update
                     </button>
                     <button
                       onClick={nullIdToEdit}
@@ -239,4 +202,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Landfill;

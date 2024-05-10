@@ -45,7 +45,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/profile/", {
+      const response = await axios.get(`${import.meta.env.VITE_BASEURL}/profile/`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },

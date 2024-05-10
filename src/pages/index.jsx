@@ -4,3 +4,7 @@ export { default as Users } from './Users'
 export { default as Roles } from './Roles'
 export { default as Create } from './Create'
 export { default as ThirdPartyContractor } from './ThirdPartyContractor'
+export { default as Landfill } from './Landfill'
+export { default as Sts } from './Sts'
+export { default as ContractorManager } from './ContractorManager';
+export { default as Dashboard } from './Dashboard';

@@ -7,6 +7,7 @@ import {
 } from "react-icons/ai";
 import { FiPieChart } from "react-icons/fi";
 import { MdSpaceDashboard, MdOutlineCancel, MdOutlineWork } from "react-icons/md";
+import { FaPersonCircleExclamation } from "react-icons/fa6";
 import { IoPersonAdd } from "react-icons/io5";
 import { ImProfile } from "react-icons/im";
 import { RiContractFill } from "react-icons/ri";
@@ -23,7 +24,7 @@ const links = [
     links: [
       {
         name: "dashboard",
-        role: [1,2,3],
+        role: [1,2,3,5],
         icon: <MdSpaceDashboard />,
       },
     ],
@@ -34,7 +35,7 @@ const links = [
     links: [
       {
         name: "profile",
-        role: [1,2,3],
+        role: [1,2,3,5],
         icon: <ImProfile />,
       },
       {
@@ -56,6 +57,26 @@ const links = [
         name: "third-party-contractor",
         role: [1],
         icon: <RiContractFill />,
+      },
+    ],
+  },
+  {
+    title: "Managers",
+    links: [
+      {
+        name: "landfill",
+        role: [1,2,3,5],
+        icon: <FaPersonCircleExclamation />,
+      },
+      {
+        name: "sts",
+        role: [1,2,3,5],
+        icon: <FaPersonCircleExclamation />,
+      },
+      {
+        name: "contractor",
+        role: [1,2,3,5],
+        icon: <FaPersonCircleExclamation />,
       },
     ],
   },

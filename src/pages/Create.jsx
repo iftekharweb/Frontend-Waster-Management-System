@@ -42,7 +42,7 @@ const Create = () => {
       return;
     }
     try {
-      const res = await axios.post(`http://127.0.0.1:8000/users/`, {
+      const res = await axios.post(`${import.meta.env.VITE_BASEURL}/users/`, {
       username,
       first_name,
       last_name,
