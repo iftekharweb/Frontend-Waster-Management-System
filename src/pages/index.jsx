@@ -8,3 +8,7 @@ export { default as Landfill } from './Landfill'
 export { default as Sts } from './Sts'
 export { default as ContractorManager } from './ContractorManager';
 export { default as Dashboard } from './Dashboard';
+export { default as StationLandfill } from './StationLandfill';
+export { default as StationSTS } from './StationSTS';
+export { default as StationLocal } from './StationLocal';
+export { default as WasterTransfer } from './WasterTransfer';

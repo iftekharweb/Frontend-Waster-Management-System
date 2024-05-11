@@ -25,20 +25,6 @@ const initial_contractor = {
   degignated_sts: null,
 };
 
-function calculateTimeDifference(created_at) {
-  const createdAtDate = new Date(created_at);
-  const currentDate = new Date();
-  const timeDifference = currentDate - createdAtDate;
-  const days = Math.floor(
-    (timeDifference % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24)
-  );
-  const hours = Math.floor(
-    (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
-  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-  return { days, hours, minutes };
-}
-
 const ThirdPartyContractor = () => {
   const { authToken } = useStateContext();
   const navigate = useNavigate();

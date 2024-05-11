@@ -7,6 +7,7 @@ import {
 } from "react-icons/ai";
 import { FiPieChart } from "react-icons/fi";
 import { MdSpaceDashboard, MdOutlineCancel, MdOutlineWork } from "react-icons/md";
+import { ImBin2 } from "react-icons/im";
 import { FaPersonCircleExclamation } from "react-icons/fa6";
 import { IoPersonAdd } from "react-icons/io5";
 import { ImProfile } from "react-icons/im";
@@ -77,6 +78,36 @@ const links = [
         name: "contractor",
         role: [1,2,3,5],
         icon: <FaPersonCircleExclamation />,
+      },
+    ],
+  },
+  {
+    title: "Waste Stations",
+    links: [
+      {
+        name: "landfill-station",
+        role: [1,2,3,5],
+        icon: <ImBin2 />,
+      },
+      {
+        name: "sts-station",
+        role: [1,2,3,5],
+        icon: <ImBin2 />,
+      },
+      {
+        name: "local-station",
+        role: [1,2,3,5],
+        icon: <ImBin2 />,
+      },
+    ],
+  },
+  {
+    title: "Waste Management",
+    links: [
+      {
+        name: "waste-transfer",
+        role: [1,2,3,5],
+        icon: <ImBin2 />,
       },
     ],
   },
